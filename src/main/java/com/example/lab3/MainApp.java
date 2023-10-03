@@ -2,26 +2,59 @@ package com.example.lab3;
 
 import java.io.IOException;
 
+import com.example.lab3.controllers.*;
+import com.example.lab3.models.Author;
+import com.example.lab3.models.Blog;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private final ObservableList<Author> authorData = FXCollections.observableArrayList();
+    private final ObservableList<Blog> blogData = FXCollections.observableArrayList();
+
+    public MainApp() {
+        authorData.add(new Author("Фамилия 1", "Имя 1", null));
+        authorData.add(new Author("Фамилия 2", "Имя 2", null));
+        authorData.add(new Author("Фамилия 3", "Имя 3", null));
+        authorData.add(new Author("Фамилия 4", "Имя 4", null));
+        authorData.add(new Author("Фамилия 5", "Имя 5", null));
+        blogData.add(new Blog("Заголовок 1", "..."));
+        blogData.add(new Blog("Заголовок 2", "Java[прим. 1] — строго типизированный объектно-ориентированный язык программирования общего назначения, разработанный компанией Sun Microsystems (в последующем приобретённой компанией Oracle). Разработка ведётся сообществом, организованным через Java Community Process; язык и основные реализующие его технологии распространяются по лицензии GPL. Права на торговую марку принадлежат корпорации Oracle.\n" +
+                "\n" +
+                "Приложения Java обычно транслируются в специальный байт-код, поэтому они могут работать на любой компьютерной архитектуре, для которой существует реализация виртуальной Java-машины. Дата официального выпуска — 23 мая 1995 года. Занимает высокие места в рейтингах популярности языков программирования (2-е место в рейтингах IEEE Spectrum (2020)[3] и TIOBE (2021)[4])."));
+        blogData.add(new Blog("Заголовок 3", "Технология JavaFX была впервые продемонстрирована корпорацией Sun Microsystems на конференции JavaOne в мае 2007 года. 4 декабря 2008 года вышла версия 1.0 платформы, содержащая следующие компоненты:\n" +
+                "\n" +
+                "Средства разработки — компилятор и среда исполнения JavaFX, язык программирования JavaFX Script, а также графические, медийные и веб-библиотеки для создания RIA-приложений для настольных компьютеров, веб-сайтов и мобильных устройств.\n" +
+                "Интегрированная среда разработки NetBeans IDE (версии 6.*) — средства для кодирования и отладки приложений, написанных на JavaFX Script. В редакторе JavaFX Script есть возможность быстрого добавления объектов JavaFX с уже готовыми геометрическими фигурами, компонентами интерфейса пользователя, средствами преобразования и анимацией.\n" +
+                "Production Suite — набор инструментов и плагинов для импорта графических объектов в приложения JavaFX. Включает следующие компоненты:\n" +
+                "Плагины для графических редакторов Adobe Photoshop CS3, CS4 и Adobe Illustrator CS3, CS4. С помощью плагинов можно экспортировать графические объекты из этих приложений в код JavaFX Script.\n" +
+                "Media Factory: набор инструментов для конвертирования SVG-графики в код JavaFX и просмотра графических объектов, импортированных в JavaFX из других форматов. Также включает примеры приложений, учебные курсы, статьи, API-документацию и примеры кода."));
+
+    }
+    public ObservableList<Author> getAuthorData() {return authorData;}
+    public ObservableList<Blog> getBlogData(){return blogData;}
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("AddressApp");
+        this.primaryStage.setTitle("BlogApp");
+
+        this.primaryStage.getIcons().add(new Image("file:src/main/resources/com/example/lab3/img/Blogger-Logo-2010.png"));
 
         initRootLayout();
+        //showOverview("Author");
 
-        showPersonOverview();
     }
 
     /**
@@ -29,43 +62,35 @@ public class MainApp extends Application {
      */
     public void initRootLayout() {
         try {
-            // Загружаем корневой макет из fxml файла.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("views/RootLayout.fxml"));
             rootLayout = (BorderPane) loader.load();
 
-            // Отображаем сцену, содержащую корневой макет.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
+            RootController controller = loader.getController();
+            controller.setMainApp(this);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public void showOverview(String value){
 
-    /**
-     * Показывает в корневом макете сведения об адресатах.
-     */
-    public void showPersonOverview() {
         try {
-            // Загружаем сведения об адресатах.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("views/PersonOverview.fxml"));
-            AnchorPane personOverview = (AnchorPane) loader.load();
-
-            // Помещаем сведения об адресатах в центр корневого макета.
-            rootLayout.setCenter(personOverview);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void showBlogOverview(){
-        try {
-            // Загружаем сведения об адресатах.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("views/BlogOverview.fxml"));
-            AnchorPane blogOverview = (AnchorPane) loader.load();
-            rootLayout.setCenter(blogOverview);
+            loader.setLocation(MainApp.class.getResource("views/"+value+"Overview.fxml"));
+            AnchorPane overview = loader.load();
+            rootLayout.setCenter(overview);
+            if (value.equals("Author")){
+                AuthorController authorController = loader.getController();
+                authorController.setMainApp(this);
+            }
+            else{
+                BlogController blogController = loader.getController();
+                blogController.setMainApp(this);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,4 +107,47 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    public  boolean showEditDialog(Object object){
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            if (object.getClass().equals(Author.class)){
+                loader.setLocation(MainApp.class.getResource("views/AuthorEditDialog.fxml"));
+            }
+            else{
+                loader.setLocation(MainApp.class.getResource("views/BlogEditDialog.fxml"));
+            }
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Author");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            boolean isOkClicked;
+            if (object.getClass().equals(Author.class)){
+                AuthorEditDialogController controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+                controller.setAuthor((Author) object);
+                dialogStage.showAndWait();
+                isOkClicked = controller.isOkClicked();
+            }
+            else{
+                BlogEditDialogController controller = loader.getController();
+                controller.setDialogStage(dialogStage);
+                controller.setBlog((Blog) object);
+                dialogStage.showAndWait();
+                isOkClicked = controller.isOkClicked();
+            }
+            return isOkClicked;
+
+        }catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }
