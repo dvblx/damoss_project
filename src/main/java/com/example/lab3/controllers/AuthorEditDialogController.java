@@ -21,28 +21,14 @@ public class AuthorEditDialogController {
     private Author author;
     private boolean okClicked = false;
 
-    /**
-     * Инициализирует класс-контроллер. Этот метод вызывается автоматически
-     * после того, как fxml-файл будет загружен.
-     */
     @FXML
     private void initialize() {
     }
 
-    /**
-     * Устанавливает сцену для этого окна.
-     *
-     * @param dialogStage
-     */
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
-    /**
-     * Задаёт адресата, информацию о котором будем менять.
-     *
-     * @param author
-     */
     public void setAuthor(Author author) {
         this.author = author;
 
@@ -51,18 +37,10 @@ public class AuthorEditDialogController {
         emailField.setText(author.getEmail());
     }
 
-    /**
-     * Returns true, если пользователь кликнул OK, в другом случае false.
-     *
-     * @return
-     */
     public boolean isOkClicked() {
         return okClicked;
     }
 
-    /**
-     * Вызывается, когда пользователь кликнул по кнопке OK.
-     */
     @FXML
     private void handleOk() {
         if (isInputValid()) {
@@ -75,19 +53,11 @@ public class AuthorEditDialogController {
         }
     }
 
-    /**
-     * Вызывается, когда пользователь кликнул по кнопке Cancel.
-     */
     @FXML
     private void handleCancel() {
         dialogStage.close();
     }
 
-    /**
-     * Проверяет пользовательский ввод в текстовых полях.
-     *
-     * @return true, если пользовательский ввод корректен
-     */
     private boolean isInputValid() {
         String errorMessage = "";
 
@@ -125,5 +95,4 @@ public class AuthorEditDialogController {
             return false;
         }
     }
-
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<blogs>
+    <blog>
+        <creationDate>2023-10-07</creationDate>
+        <lastUpdateDate>2023-10-12</lastUpdateDate>
+        <title>Title 1</title>
+        <content>Some content</content>
+    </blog>
+    <blog>
+        <creationDate>2023-10-08</creationDate>
+        <lastUpdateDate>2023-10-12</lastUpdateDate>
+        <title>Title 2</title>
+        <content>Content content content</content>
+    </blog>
+    <blog>
+        <creationDate>2023-10-09</creationDate>
+        <lastUpdateDate>2023-10-10</lastUpdateDate>
+        <title>Title 1</title>
+        <content>A lot of content</content>
+    </blog>
+</blogs>

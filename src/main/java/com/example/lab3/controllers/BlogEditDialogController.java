@@ -19,47 +19,24 @@ public class BlogEditDialogController {
     private Blog blog;
     private boolean okClicked = false;
 
-    /**
-     * Инициализирует класс-контроллер. Этот метод вызывается автоматически
-     * после того, как fxml-файл будет загружен.
-     */
     @FXML
     private void initialize() {
     }
 
-    /**
-     * Устанавливает сцену для этого окна.
-     *
-     * @param dialogStage
-     */
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
-    /**
-     * Задаёт адресата, информацию о котором будем менять.
-     *
-     * @param blog
-     */
     public void setBlog(Blog blog) {
         this.blog = blog;
 
         titleField.setText(blog.getTitle());
         contentTextArea.setText(blog.getContent());
     }
-
-    /**
-     * Returns true, если пользователь кликнул OK, в другом случае false.
-     *
-     * @return
-     */
     public boolean isOkClicked() {
         return okClicked;
     }
 
-    /**
-     * Вызывается, когда пользователь кликнул по кнопке OK.
-     */
     @FXML
     private void handleOk() {
         if (isInputValid()) {
@@ -72,19 +49,10 @@ public class BlogEditDialogController {
         }
     }
 
-    /**
-     * Вызывается, когда пользователь кликнул по кнопке Cancel.
-     */
     @FXML
     private void handleCancel() {
         dialogStage.close();
     }
-
-    /**
-     * Проверяет пользовательский ввод в текстовых полях.
-     *
-     * @return true, если пользовательский ввод корректен
-     */
     private boolean isInputValid() {
         String errorMessage = "";
 
@@ -94,7 +62,6 @@ public class BlogEditDialogController {
         if (contentTextArea.getText() == null || contentTextArea.getText().length() == 0) {
             errorMessage += "No valid content!\n";
         }
-
 
         if (errorMessage.length() == 0) {
             return true;

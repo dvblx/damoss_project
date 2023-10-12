@@ -1,10 +1,12 @@
 package com.example.lab3.models;
 
+import com.example.lab3.util.LocalDateAdapter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 public class Blog {
@@ -12,6 +14,7 @@ public class Blog {
     private final StringProperty content;
     private final ObjectProperty<LocalDate> creationDate;
     private final ObjectProperty<LocalDate> lastUpdateDate;
+    public Blog(){this(null, null);}
 
     public Blog(String title, String content) {
         this.title = new SimpleStringProperty(title) ;
@@ -27,8 +30,10 @@ public class Blog {
     public String getContent() {return content.get();}
     public void setContent(String content) {this.content.set(content);}
     public StringProperty contentProperty(){return this.content;}
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public LocalDate getCreationDate() {return creationDate.get();}
     public ObjectProperty<LocalDate> creationDateProperty(){return creationDate;}
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public LocalDate getLastUpdateDate() {return lastUpdateDate.get();}
     public void setLastUpdateDate(LocalDate lastUpdateDate) {this.lastUpdateDate.set(lastUpdateDate);}
     public ObjectProperty<LocalDate> lastUpdateDateProperty(){return lastUpdateDate;}

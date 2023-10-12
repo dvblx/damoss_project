@@ -1,20 +1,30 @@
 package com.example.lab3;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 import com.example.lab3.controllers.*;
 import com.example.lab3.models.Author;
+import com.example.lab3.models.AuthorListWrapper;
 import com.example.lab3.models.Blog;
+import com.example.lab3.models.BlogListWrapper;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 public class MainApp extends Application {
 
@@ -56,10 +66,6 @@ public class MainApp extends Application {
         //showOverview("Author");
 
     }
-
-    /**
-     * Инициализирует корневой макет.
-     */
     public void initRootLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -68,9 +74,9 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
-            primaryStage.show();
             RootController controller = loader.getController();
             controller.setMainApp(this);
+            primaryStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,11 +101,6 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Возвращает главную сцену.
-     * @return
-     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -149,5 +150,87 @@ public class MainApp extends Application {
         }
     }
 
+    public File getFilePath() {
+        Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+        String filePath = prefs.get("filePath", null);
+        if (filePath != null) {
+            return new File(filePath);
+        } else {
+            return null;
+        }
+    }
 
+    public void setFilePath(File file) {
+        Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+        if (file != null) {
+            prefs.put("filePath", file.getPath());
+
+            // Обновление заглавия сцены.
+            primaryStage.setTitle("BlogApp - " + file.getName());
+        } else {
+            prefs.remove("filePath");
+
+            primaryStage.setTitle("BlogApp");
+        }
+    }
+    public void loadDataFromFile(File file, String dataType) {
+        try {
+            JAXBContext context;
+            if (dataType.equals("Author"))
+                context = JAXBContext.newInstance(AuthorListWrapper.class);
+            else
+                context = JAXBContext.newInstance(BlogListWrapper.class);
+            Unmarshaller um = context.createUnmarshaller();
+            if (dataType.equals("Author")){
+                AuthorListWrapper wrapper = (AuthorListWrapper) um.unmarshal(file);
+                authorData.clear();
+                authorData.addAll(wrapper.getAuthors());
+            }
+            else{
+                BlogListWrapper wrapper = (BlogListWrapper) um.unmarshal(file);
+                blogData.clear();
+                blogData.addAll(wrapper.getBlogs());
+            }
+            setFilePath(file);
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            //System.out.println(e.printStackTrace(););
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Could not load data");
+            alert.setContentText("Could not load data from file:\n" + file.getPath());
+            alert.showAndWait();
+        }
+    }
+
+    public void saveDataToFile(File file, String dataType) {
+        try {
+            JAXBContext context;
+            if (dataType.equals("Author"))
+                context = JAXBContext.newInstance(AuthorListWrapper.class);
+            else
+                context = JAXBContext.newInstance(BlogListWrapper.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            if (dataType.equals("Author")){
+                AuthorListWrapper wrapper = new AuthorListWrapper();
+                wrapper.setAuthors(authorData);
+                m.marshal(wrapper, file);
+            }
+            else{
+                BlogListWrapper wrapper = new BlogListWrapper();
+                wrapper.setBlogs(blogData);
+                m.marshal(wrapper, file);
+            }
+            setFilePath(file);
+        } catch (JAXBException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Could not save data");
+            alert.setContentText("Could not save data to file:\n" + file.getPath());
+            alert.showAndWait();
+        }
+    }
 }

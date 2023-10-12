@@ -41,15 +41,9 @@ public class AuthorController {
                 .addListener((observable, oldValue, newValue)-> showAuthorDetails(newValue));
     }
 
-    /**
-     * Вызывается главным приложением, которое даёт на себя ссылку.
-     *
-     * @param mainApp
-     */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
 
-        // Добавление в таблицу данных из наблюдаемого списка
         authorTable.setItems(mainApp.getAuthorData());
     }
     private void showAuthorDetails(Author author){
@@ -93,11 +87,6 @@ public class AuthorController {
             mainApp.getAuthorData().add(tempAuthor);
         }
     }
-
-    /**
-     * Вызывается, когда пользователь кликает по кнопка Edit...
-     * Открывает диалоговое окно для изменения выбранного адресата.
-     */
     @FXML
     private void handleEditAuthor() {
         Author selectedAuthor = authorTable.getSelectionModel().getSelectedItem();

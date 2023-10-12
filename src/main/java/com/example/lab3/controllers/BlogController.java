@@ -3,10 +3,7 @@ package com.example.lab3.controllers;
 import com.example.lab3.MainApp;
 import com.example.lab3.models.Blog;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 import java.time.format.DateTimeFormatter;
 
@@ -18,7 +15,7 @@ public class BlogController {
     @FXML
     private Label titleLabel;
     @FXML
-    private Label contentLabel;
+    private ScrollPane contentPane;
     @FXML
     private Label lastUpdateDateLabel;
     @FXML
@@ -28,7 +25,6 @@ public class BlogController {
     public BlogController() {}
     @FXML
     private void initialize() {
-        // Инициализация таблицы адресатов с двумя столбцами.
         titleColumn.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
 
         showBlogDetails(null);
@@ -38,31 +34,23 @@ public class BlogController {
                 .addListener((observable, oldValue, newValue)-> showBlogDetails(newValue));
     }
 
-    /**
-     * Вызывается главным приложением, которое даёт на себя ссылку.
-     *
-     * @param mainApp
-     */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
-
-        // Добавление в таблицу данных из наблюдаемого списка
         blogTable.setItems(mainApp.getBlogData());
     }
     private void showBlogDetails(Blog blog){
         if (blog != null){
             titleLabel.setText(blog.getTitle());
-            contentLabel.setText(blog.getContent());
+            contentPane.setContent(new Label(blog.getContent()));
             creationDateLabel.setText(blog.getCreationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             lastUpdateDateLabel.setText(blog.getLastUpdateDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         }
         else{
             titleLabel.setText("");
-            contentLabel.setText("");
+            contentPane.setContent(new Label(""));
             lastUpdateDateLabel.setText("");
             creationDateLabel.setText("");
         }
-
     }
 
     @FXML
@@ -91,10 +79,6 @@ public class BlogController {
         }
     }
 
-    /**
-     * Вызывается, когда пользователь кликает по кнопка Edit...
-     * Открывает диалоговое окно для изменения выбранного адресата.
-     */
     @FXML
     private void handleEditBlog() {
         Blog selectedBlog = blogTable.getSelectionModel().getSelectedItem();
